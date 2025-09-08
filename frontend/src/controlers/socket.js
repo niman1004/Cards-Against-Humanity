@@ -1,0 +1,36 @@
+import {io} from "socket.io-client"
+const socket = io("http://localhost:3000")
+
+const registerListeners= (handlers)=>{
+    socket.on("playerListUpdate" , handlers.onPlayerListUpdate);
+    socket.on("newRound" , handlers.onNewRound);
+    socket.on("updateHand" , handlers.onUpdateHand);
+    socket.on("judgeRound" , handlers.onJudgeRound);
+    socket.on("roundResult" , handlers.onRoundResult);
+    socket.on("gameStarted" , handlers.onGameStarted)
+}
+
+const emitJoinRoom= (roomCode , username)=>{
+    socket.emit("joinRoom" , {roomCode , username} );
+}
+
+const emitStartGame = (roomCode)=>{
+    socket.emit("startGame" , {roomCode});
+}
+
+const emitSubmitCard= (roomCode , card)=>{
+    socket.emit("submitCard" , {roomCode , card});
+}
+
+const emitPickWinner = (roomCode , winnerId)=>{
+    socket.emit("pickWinner" , {roomCode , winnerId});
+}
+
+export {
+    socket , 
+    registerListeners , 
+    emitJoinRoom ,
+    emitStartGame , 
+    emitSubmitCard , 
+    emitPickWinner,
+};
