@@ -97,6 +97,7 @@ io.on("connection", (socket) => {
         id: p.id,
         name: p.name,
         isCzar: p.isCzar,
+        score: p.score
       })),
     });
   });

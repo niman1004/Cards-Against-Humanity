@@ -9,7 +9,7 @@ import {
 } from "../controlers/socket.js"
 
 function Playground() {
-    const [roomCode , setRoomCode]= useState("TEST123");
+    const [roomCode , setRoomCode]= useState("");
     const [username , setUsername]= useState("");
     const [players , setPlayers]= useState([])
     const [hand , setHand]= useState([])
@@ -18,6 +18,7 @@ function Playground() {
     const [isCzar , setIsCzar]= useState(false)
     const [logs , setLogs]= useState([])
     const [gameStarted , setGameStarted]= useState(false)
+    // const [score , setScore]= useState(0)
 
     useEffect(()=>{
         registerListeners({
@@ -65,23 +66,24 @@ function Playground() {
   return (
     <div>
       <h1>PLAYGROUND- TESTING</h1>
-      {!gameStarted &&(<div>
-          <input className='py-2.5 sm:py-3 px-4 block w-full border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500'  value={roomCode} onChange={(e)=>setRoomCode(e.target.value)}/>
-      <input className='py-2.5 sm:py-3 px-4 block w-full border-gray-200 rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500'  value={username} onChange={(e)=>setUsername(e.target.value)}/>
+      {!gameStarted &&(<div className='justify-center'>
+          <input className='py-2.5 sm:py-3 px-4 block  border-black rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500' placeholder='enter roomcode or make your own' value={roomCode} onChange={(e)=>setRoomCode(e.target.value)}/>
+      <input className='py-2.5 sm:py-3 px-4 block  border-black rounded-lg sm:text-sm focus:border-blue-500 focus:ring-blue-500'placeholder='Enter Username'  value={username} onChange={(e)=>setUsername(e.target.value)}/>
       <button className="p-2 mr-2 bg-slate-400"  onClick={()=>emitJoinRoom(roomCode , username)}>join</button>
       <button  className='p-2 bg-green-400'   onClick={()=>startGame(roomCode)}>Start game</button>
 
       </div>)}
     
         <h2>ME</h2>
-        <p>{username}</p>
-        <p>{roomCode}</p>
+        <p className='text-blue-800'> username = {username}</p>
+        <p className='text-green-800'> current room= {roomCode}</p>
+        
 
 
       <h2>PLAYERS : {players.length}</h2>
       <ul>
         {players.map(p=>(
-            <li key={p.id}>{p.name} {p.isCzar? "(Czar)" : ""}</li>
+            <li key={p.id}>{p.name} {p.isCzar? "(Czar)" : ""} score: {p.score}</li>
         ))}
       </ul>
 {gameStarted && (<div>
