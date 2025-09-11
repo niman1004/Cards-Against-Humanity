@@ -3,14 +3,14 @@ import { Server } from "socket.io";
 import { Player, Room } from "./entities.js";
 import express from "express"
 
-const app= express()
+const app = express()
 app.use(express.static("public"));
 
 
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-     cors: {
+  cors: {
     origin: "*",
     methods: ["GET", "POST"]
   }
@@ -71,6 +71,9 @@ io.on("connection", (socket) => {
     player.hand.push(room.whiteDeck.pop());
     io.to(player.id).emit("updateHand", player.hand);
 
+    //brodcasting submission process 
+    io.to(roomCode).emit("submissionsUpdate", room.submissions)
+
     // check if all submitted
     if (room.submissions.length === room.players.length - 1) {
       const czar = room.players.find((p) => p.isCzar);
@@ -88,7 +91,7 @@ io.on("connection", (socket) => {
       winner: winner.name,
       scores: room.players.map((p) => ({ name: p.name, score: p.score })),
     });
-
+    room.submissions = [];
     room.nextRound();
 
     io.to(roomCode).emit("newRound", {
@@ -101,6 +104,25 @@ io.on("connection", (socket) => {
       })),
     });
   });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected", socket.id)
+    //finding room to which this socket belonged to
+    for (const roomCode in rooms) {
+      const room = rooms[roomCode];
+      const index = room.players.findIndex((p) => p.id === socket.id);
+
+      if (index !== -1) {
+        room.players.splice(index, 1);
+        io.to(roomCode).emit("playerListUpdate", room.players)
+      }
+      if (room.players.length === 0) {
+        delete rooms[roomCode]
+      }
+
+      break;
+    }
+  })
 });
 
 httpServer.listen(3000, () => {
