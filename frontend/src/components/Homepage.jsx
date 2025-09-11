@@ -28,6 +28,7 @@ function Homepage() {
   }, []);
 
   return (
+    <div className="flex items-center justify-center h-screen w-[90%]">
     <div className="flex flex-row w-full gap-11 justify-around">
       <div className="flex flex-col  m-0 p-0 items-start mr-[100px] mt-[100px] mb-[100px]">
         <h1 className="font-bold text-[10rem] p-0 leading-none">
@@ -69,6 +70,7 @@ function Homepage() {
           <div className="card-tag">cards against humanity</div>
         </div>
       </div>
+    </div>
     </div>
   );
 }
