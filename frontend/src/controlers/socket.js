@@ -7,7 +7,8 @@ const registerListeners= (handlers)=>{
     socket.on("updateHand" , handlers.onUpdateHand);
     socket.on("judgeRound" , handlers.onJudgeRound);
     socket.on("roundResult" , handlers.onRoundResult);
-    socket.on("gameStarted" , handlers.onGameStarted)
+    socket.on("gameStarted" , handlers.onGameStarted);
+    socket.on("submissionsUpdate" , handlers.onSubmissionsUpdate);
 }
 
 const emitJoinRoom= (roomCode , username)=>{
