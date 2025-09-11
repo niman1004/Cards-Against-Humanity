@@ -162,7 +162,7 @@ function Playground() {
                     ))}
                   </div>
                   <button
-                    className="bg-[#804385] px-4 py-2 rounded-md hover:bg-[#69396e]"
+                    className="bg-[#804385] px-4 py-2 rounded-md hover:bg-[#69396e] mt-3"
                     disabled={!chosenCard}
                     onClick={() => submitCard()}
                   >
@@ -174,7 +174,8 @@ function Playground() {
               {((submitted && submissions.length > 0) || isCzar) && (
                 <div>
                   <h2 className="font-bold mb-2">
-                    {isCzar ? "Judge Submissions" : "Round submissions"}
+                    {submissions.length==0? "Waiting for players to submit ( i didnt know how else to phrase it )..." : "Submissions"} 
+                    
                   </h2>
                   <div className="flex flex-wrap gap-2">
                     {submissions.map((s, i) => (
