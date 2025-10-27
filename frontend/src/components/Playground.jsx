@@ -8,6 +8,8 @@ import {
   emitPickWinner,
 } from "../controlers/socket.js";
 import EnterRoomBox from "./EnterRoomBox.jsx";
+import BlackCard from "./card_components/BlackCard.jsx";
+import WhiteCardBtn from "./card_components/WhiteCardBtn.jsx";
 import Container from "./container/Container.jsx";
 
 function Playground() {
@@ -101,7 +103,7 @@ function Playground() {
         <div className="w-full  bg-[#101010] rounded-lg shadow-lg p-6 flex flex-col gap-6">
           {/* Top Bar */}
           <div className="flex flex-row justify-between items-center">
-            <div>
+            <div className="flex flex-row gap-10">
               <p className="font-bold text-2xl">Username: {username}</p>
               <p className=" text-2xl text-gray-400">Room: {roomCode}</p>
             </div>
@@ -117,16 +119,14 @@ function Playground() {
 
           {/* Players */}
           <div className="bg-[#1a1a1a] p-4 rounded-lg">
-            <h2 className="text-2xl font-semibold mb-2 mt-2">
+            <h2 className="text-2xl font-semibold mb-2 mt-1">
               Players ({players.length})
             </h2>
-            <ul className="space-y-1 ml-3 text-2xl">
+            <ul className=" ml-3 text-2xl flex flex-row gap-5">
               {players.map((p) => (
                 <li
                   key={p.id}
-                  className={`${
-                    p.isCzar ? "text-[#c084fc]  font-bold" : "text-white"
-                  }`}
+                  className={`${p.isCzar ? "text-[#c084fc]" : "text-white"}`}
                 >
                   {p.name} {p.isCzar ? "(Czar)" : ""} — score: {p.score}
                 </li>
@@ -135,13 +135,18 @@ function Playground() {
           </div>
 
           {/* Game Area */}
+          {/* black card */}
           {gameStarted && (
-            <div className="bg-[#1a1a1a] p-4 rounded-lg flex flex-col gap-4">
-              <div>
-                <h2 className="font-bold mb-1">Black Card</h2>
-                <p className="bg-gray-700 p-3 rounded-md">
-                  {blackCard || "none"}
-                </p>
+            <div className="bg-[#1a1a1a] p-4 rounded-lg flex flex-row gap-4">
+              <div className="p-8 flex flex-col">
+                <BlackCard blackCard={blackCard} />
+                <button
+                  className="bg-[#804385] px-4 py-2 rounded-md hover:bg-[#69396e] mt-3"
+                  disabled={!chosenCard}
+                  onClick={() => submitCard()}
+                >
+                  Submit
+                </button>
               </div>
 
               {!isCzar && !submitted && (
@@ -149,44 +154,34 @@ function Playground() {
                   <h2 className="font-bold mb-2">Your Hand</h2>
                   <div className="flex flex-wrap gap-2">
                     {hand.map((c, i) => (
-                      <button
+                      <WhiteCardBtn
                         key={i}
                         disabled={chosenCard === c}
-                        className={`${
-                          chosenCard === c ? "bg-green-600" : "bg-slate-600"
-                        } px-4 py-2 rounded-md hover:bg-slate-500`}
+                        text={c}
+                        viewOnly={false}
                         onClick={() => setChosenCard(c)}
-                      >
-                        {c}
-                      </button>
+                      />
                     ))}
                   </div>
-                  <button
-                    className="bg-[#804385] px-4 py-2 rounded-md hover:bg-[#69396e] mt-3"
-                    disabled={!chosenCard}
-                    onClick={() => submitCard()}
-                  >
-                    Submit
-                  </button>
                 </div>
               )}
 
               {((submitted && submissions.length > 0) || isCzar) && (
                 <div>
                   <h2 className="font-bold mb-2">
-                    {submissions.length==0? "Waiting for players to submit ( i didnt know how else to phrase it )..." : "Submissions"} 
-                    
+                    {submissions.length == 0
+                      ? "Waiting for players to submit  *cue elevator music*"
+                      : "Submissions"}
                   </h2>
                   <div className="flex flex-wrap gap-2">
                     {submissions.map((s, i) => (
-                      <button
+                      <WhiteCardBtn
                         key={i}
-                        className="bg-green-600 px-4 py-2 rounded-md hover:bg-green-500"
                         disabled={!isCzar}
                         onClick={() => emitPickWinner(roomCode, s.playerId)}
-                      >
-                        {s.card}
-                      </button>
+                        text={s.card}
+                        viewOnly={!isCzar}
+                      />
                     ))}
                   </div>
                 </div>
