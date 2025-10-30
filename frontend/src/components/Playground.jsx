@@ -10,6 +10,7 @@ import {
 import EnterRoomBox from "./EnterRoomBox.jsx";
 import BlackCard from "./card_components/BlackCard.jsx";
 import WhiteCardBtn from "./card_components/WhiteCardBtn.jsx";
+import ConfettiExplosion from "react-confetti-explosion";
 import Container from "./container/Container.jsx";
 
 function Playground() {
@@ -25,7 +26,9 @@ function Playground() {
   const [roomJoined, setRoomJoined] = useState(false);
   const [chosenCard, setChosenCard] = useState(null);
   const [submitted, setSubmitted] = useState(false);
-
+  const [confetti, setConfetti] = useState(false);
+  const [roundWinner, setRoundWinner] = useState(null);
+  const [showWinnerDialog, setShowWinnerDialog] = useState(false);
   useEffect(() => {
     registerListeners({
       onPlayerListUpdate: (players) => {
@@ -58,7 +61,18 @@ function Playground() {
       },
       onRoundResult: (result) => {
         log("round result", result);
+        const winner = result.winner;
+        setRoundWinner(winner);
+        setShowWinnerDialog(true);
+        
+          setConfetti(true);
+          setTimeout(() => setConfetti(false), 3500);
+       
         setSubmissions([]);
+        setTimeout(() => {
+          setShowWinnerDialog(false);
+          setRoundWinner(null);
+        }, 3500);
       },
       onSubmissionsUpdate: (subs) => {
         setSubmissions(subs);
@@ -90,7 +104,7 @@ function Playground() {
   }
 
   return (
-    <div className=" flex items-start justify-center w-screen h-screen text-2xl text-white font-bold ">
+    <div className="relative flex items-start justify-center w-screen h-screen text-2xl text-white font-bold ">
       {!roomJoined ? (
         <EnterRoomBox
           roomCode={roomCode}
@@ -186,6 +200,25 @@ function Playground() {
                   </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {/* Winner Dialog */}
+          {showWinnerDialog && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
+              <div className="bg-[#222] p-6 rounded-lg shadow-lg text-center w-[350px]">
+                <h2 className="text-3xl mb-3 text-[#804385] font-bold">
+                  🎉 {roundWinner} Has Humor! 🎉
+                </h2>
+                <p className="text-gray-300 text-xl">Onto the next round...</p>
+              </div>
+            </div>
+          )}
+
+          {/* Confetti */}
+          {confetti && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+              <ConfettiExplosion duration={3000} />
             </div>
           )}
 

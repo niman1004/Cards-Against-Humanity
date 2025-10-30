@@ -9,7 +9,6 @@ import Typewriter from "./Typewriter";
 //dont touch any of the css or it will break :)
 
 function Homepage() {
-  const [tagline, setTagline] = useState("");
   const [hovered, setHovered] = useState(false);
 
   
