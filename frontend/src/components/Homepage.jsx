@@ -3,6 +3,7 @@ import "../components/css_aryan/general.css";
 import "../components/css_aryan/homepage.css";
 import "../components/css_aryan/styles.css"
 import { Link } from "react-router-dom";
+import Typewriter from "./Typewriter";
 
 
 //dont touch any of the css or it will break :)
@@ -11,7 +12,7 @@ function Homepage() {
   const [tagline, setTagline] = useState("");
   const [hovered, setHovered] = useState(false);
 
-  useEffect(() => {
+  
     const taglines = [
       "A party game for horrible people.",
       "Do NOT feel free to laugh.",
@@ -23,9 +24,7 @@ function Homepage() {
       "Here again? Do you like being insulted?",
     ];
 
-    const randomIndex = Math.floor(Math.random() * taglines.length);
-    setTagline(taglines[randomIndex]);
-  }, []);
+    
 
   return (
     <div className="flex items-center justify-center h-screen w-[90%]">
@@ -36,7 +35,8 @@ function Homepage() {
          <h1 className="font-bold text-[10rem] p-0 mt-0 leading-none">against </h1> 
          <h1 className="font-bold text-[10rem] p-0 mt-0 leading-none"> humanity
         </h1>
-        <h2 className="mt-2 text-3xl">{tagline}</h2>
+        {/* <h2 className="mt-2 text-3xl">{tagline}</h2> */}
+        <Typewriter words={taglines}/>
       </div>
 
       <div className="cards-container gap-11 ml-20">
