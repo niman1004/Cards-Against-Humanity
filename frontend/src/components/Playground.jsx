@@ -208,7 +208,7 @@ function Playground() {
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
               <div className="bg-[#222] p-6 rounded-lg shadow-lg text-center w-[350px]">
                 <h2 className="text-3xl mb-3 text-[#804385] font-bold">
-                  🎉 {roundWinner} Has Humor! 🎉
+                  🎉 {roundWinner} has Humor! 🎉
                 </h2>
                 <p className="text-gray-300 text-xl">Onto the next round...</p>
               </div>
