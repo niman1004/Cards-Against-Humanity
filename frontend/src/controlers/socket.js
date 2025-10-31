@@ -1,7 +1,5 @@
 import {io} from "socket.io-client"
-const socket = io(import.meta.env.VITE_SOCKET_URL , {
-    transports:["websocket"]
-});
+const socket = io(import.meta.env.VITE_SOCKET_URL );
 
 
 const registerListeners= (handlers)=>{
