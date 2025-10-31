@@ -2,16 +2,19 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { Player, Room } from "./entities.js";
 import express from "express"
+import dotenv from "dotenv";
+dotenv.config();
+
 
 const app = express()
 app.use(express.static("public"));
 
-
+const PORT= process.env.PORT || 10000
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "*",
+    origin:process.env.FRONTEND_URL,
     methods: ["GET", "POST"]
   }
 });
@@ -125,6 +128,6 @@ io.on("connection", (socket) => {
   })
 });
 
-httpServer.listen(3000, () => {
-  console.log("server is running on port 3000");
+httpServer.listen(PORT, () => {
+  console.log(`Server up and running on ${PORT}`);
 });
