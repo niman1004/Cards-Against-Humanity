@@ -2,12 +2,14 @@ import {blackCards , whiteCards} from "./cards.js";
 
 //player
  export class Player{
-    constructor(socketId, name){
-        this.id= socketId;
-        this.name= name;
+    constructor( playerId , socketId, name){
+        this.socketId= socketId;
+        this.playerId= playerId;// stored locally for reconnection
+        this.name= name; 
         this.hand=[];
         this.score= 0;
         this.isCzar= false;
+        this.disconnectTimeout= null;
     }
 }
 
@@ -27,8 +29,8 @@ export class Room{
         this.players.push(player);
     }
 
-    removePlayer(socketId){
-        this.players= this.players.filter(p=> p.id!= socketId);
+    removePlayer(playerId){
+        this.players= this.players.filter(p=> p.playerId!= playerId);
     }
 
     startGame(){

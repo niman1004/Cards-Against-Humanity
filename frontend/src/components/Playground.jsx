@@ -29,6 +29,8 @@ function Playground() {
   const [confetti, setConfetti] = useState(false);
   const [roundWinner, setRoundWinner] = useState(null);
   const [showWinnerDialog, setShowWinnerDialog] = useState(false);
+  const [winningCard , setWinningCard]= useState(null);
+  
   useEffect(() => {
     registerListeners({
       onPlayerListUpdate: (players) => {
@@ -47,7 +49,7 @@ function Playground() {
         setChosenCard(null);
         setBlackCard(data.blackCard);
         setPlayers(data.players);
-        const me = data.players.find((p) => p.id === socket.id);
+        const me = data.players.find((p) => p.socketId === socket.id);
         setIsCzar(me?.isCzar || false);
         log("new round started", data);
       },
@@ -62,7 +64,9 @@ function Playground() {
       onRoundResult: (result) => {
         log("round result", result);
         const winner = result.winner;
+        const wc= result.winningCard;
         setRoundWinner(winner);
+        setWinningCard(wc)
         setShowWinnerDialog(true);
         
           setConfetti(true);
@@ -72,12 +76,18 @@ function Playground() {
         setTimeout(() => {
           setShowWinnerDialog(false);
           setRoundWinner(null);
+          setWinningCard(null)
         }, 3500);
       },
       onSubmissionsUpdate: (subs) => {
         setSubmissions(subs);
         log("submissions updated", subs);
       },
+
+      onSavePlayerId: (playerId)=>{
+        localStorage.setItem("playerId" , playerId)
+        console.log("PlayerId should be saved now")
+      }
     });
 
     return () => {
@@ -90,7 +100,7 @@ function Playground() {
   }
 
   function handleJoin() {
-    emitJoinRoom(roomCode, username);
+    emitJoinRoom(roomCode, username , localStorage.getItem("playerId"));
     setRoomJoined(true);
   }
 
@@ -139,7 +149,7 @@ function Playground() {
             <ul className=" ml-3 text-2xl flex flex-row gap-5">
               {players.map((p) => (
                 <li
-                  key={p.id}
+                  key={p.socketId}
                   className={`${p.isCzar ? "text-[#c084fc]" : "text-white"}`}
                 >
                   {p.name} {p.isCzar ? "(Czar)" : ""} — score: {p.score}
@@ -192,7 +202,7 @@ function Playground() {
                       <WhiteCardBtn
                         key={i}
                         disabled={!isCzar}
-                        onClick={() => emitPickWinner(roomCode, s.playerId)}
+                        onClick={() => emitPickWinner(roomCode, s.socketId , s.card)}
                         text={s.card}
                         viewOnly={!isCzar}
                       />
@@ -208,7 +218,7 @@ function Playground() {
             <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
               <div className="bg-[#222] p-6 rounded-lg shadow-lg text-center w-[350px]">
                 <h2 className="text-3xl mb-3 text-[#804385] font-bold">
-                  🎉 {roundWinner} has Humor! 🎉
+                  🎉 {roundWinner} has Humor and graced us with {winningCard}! 🎉
                 </h2>
                 <p className="text-gray-300 text-xl">Onto the next round...</p>
               </div>
