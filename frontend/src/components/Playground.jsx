@@ -166,7 +166,7 @@ function Playground() {
                 <BlackCard blackCard={blackCard} />
                 <button
                   className="bg-[#804385] px-4 py-2 rounded-md hover:bg-[#69396e] mt-3"
-                  disabled={!chosenCard}
+                  disabled={!chosenCard || submitted || isCzar}
                   onClick={() => submitCard()}
                 >
                   Submit
