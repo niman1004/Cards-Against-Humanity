@@ -61,6 +61,7 @@ io.on("connection", (socket) => {
 
     socket.join(roomCode);
     socket.emit("savePlayerId", playerId);
+    console.log('playerid sent')
     console.log("new player joined room" , roomCode)
     io.to(roomCode).emit("playerListUpdate", room.players);
   });
@@ -123,7 +124,7 @@ io.on("connection", (socket) => {
 
     });
 
-    io.to(roomCode).emit("playerListUpdate", room.players);
+   
     room.submissions = [];
     room.nextRound();
 
@@ -133,7 +134,8 @@ io.on("connection", (socket) => {
         playerId: p.playerId,
         socketId: p.socketId,
         name: p.name,
-        isCzar: p.isCzar
+        isCzar: p.isCzar,
+        score: p.score
       })),
     });
   });

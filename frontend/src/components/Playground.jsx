@@ -86,6 +86,7 @@ function Playground() {
 
       onSavePlayerId: (playerId)=>{
         localStorage.setItem("playerId" , playerId)
+        console.log("PlayerId should be saved now")
       }
     });
 
@@ -99,7 +100,7 @@ function Playground() {
   }
 
   function handleJoin() {
-    emitJoinRoom(roomCode, username);
+    emitJoinRoom(roomCode, username , localStorage.getItem("playerId"));
     setRoomJoined(true);
   }
 
