@@ -35,6 +35,7 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", ({ roomCode, username, savedPlayerId }) => {
     if (!rooms[roomCode]) {
       rooms[roomCode] = new Room(roomCode);
+      console.log("ROOM CREATED" , roomCode)
     }
 
     const room = rooms[roomCode];
@@ -45,6 +46,7 @@ io.on("connection", (socket) => {
         if (existingPlayer.disconnectTimeout) {
           clearTimeout(existingPlayer.disconnectTimeout);
           existingPlayer.disconnectTimeout = null;
+          console.log("Existing player reconnected" , existingPlayer)
         }
 
         existingPlayer.socketId = socket.id;
@@ -59,6 +61,7 @@ io.on("connection", (socket) => {
 
     socket.join(roomCode);
     socket.emit("savePlayerId", playerId);
+    console.log("new player joined room" , roomCode)
     io.to(roomCode).emit("playerListUpdate", room.players);
   });
 
@@ -112,13 +115,15 @@ io.on("connection", (socket) => {
     const room = rooms[roomCode];
     const winner = room.players.find((p) => p.socketId === winnerId);
     winner.score++;
-
+    console.log(winningCard)
     io.to(roomCode).emit("roundResult", {
       winner: winner.name,
       scores: room.players.map((p) => ({ name: p.name, score: p.score })),
       winningCard: winningCard
 
     });
+
+    io.to(roomCode).emit("playerListUpdate", room.players);
     room.submissions = [];
     room.nextRound();
 

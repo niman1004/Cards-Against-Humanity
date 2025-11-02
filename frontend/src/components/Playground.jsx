@@ -201,7 +201,7 @@ function Playground() {
                       <WhiteCardBtn
                         key={i}
                         disabled={!isCzar}
-                        onClick={() => emitPickWinner(roomCode, s.socketId)}
+                        onClick={() => emitPickWinner(roomCode, s.socketId , s.card)}
                         text={s.card}
                         viewOnly={!isCzar}
                       />
