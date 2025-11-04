@@ -1,32 +1,29 @@
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { Player, Room } from "./entities.js";
-import express from "express"
+import express from "express";
 import dotenv from "dotenv";
 import crypto from "crypto";
 dotenv.config();
 
-
-const app = express()
+const app = express();
 app.use(express.static("public"));
 
-const PORT = process.env.PORT || 10000
+const PORT = process.env.PORT || 10000;
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
     origin: process.env.FRONTEND_URL,
     methods: ["GET", "POST"],
-    credentials: true
+    credentials: true,
   },
-  transports: ["websocket" , "polling"],
+  transports: ["websocket", "polling"],
   pingInterval: 25000,
-  pingTimeout: 60000
+  pingTimeout: 60000,
 });
 
 const rooms = {};
-
-
 
 io.on("connection", (socket) => {
   console.log("User connected", socket.id);
@@ -35,23 +32,34 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", ({ roomCode, username, savedPlayerId }) => {
     if (!rooms[roomCode]) {
       rooms[roomCode] = new Room(roomCode);
-      console.log("ROOM CREATED" , roomCode)
+      console.log("ROOM CREATED", roomCode);
     }
 
     const room = rooms[roomCode];
 
     if (savedPlayerId) {
-      const existingPlayer = room.players.find(p => p.playerId === savedPlayerId);
+      const existingPlayer = room.players.find(
+        (p) => p.playerId === savedPlayerId
+      );
       if (existingPlayer) {
         if (existingPlayer.disconnectTimeout) {
           clearTimeout(existingPlayer.disconnectTimeout);
           existingPlayer.disconnectTimeout = null;
-          console.log("Existing player reconnected" , existingPlayer)
+          console.log("Existing player reconnected", existingPlayer);
         }
 
         existingPlayer.socketId = socket.id;
         socket.join(roomCode);
-        io.to(roomCode).emit("playerListUpdate", room.players)
+        io.to(roomCode).emit(
+          "playerListUpdate",
+          room.players.map((p) => ({
+            playerId: p.playerId,
+            socketId: p.socketId,
+            name: p.name,
+            score: p.score,
+            isCzar: p.isCzar,
+          }))
+        );
         return;
       }
     }
@@ -61,9 +69,18 @@ io.on("connection", (socket) => {
 
     socket.join(roomCode);
     socket.emit("savePlayerId", playerId);
-    console.log('playerid sent')
-    console.log("new player joined room" , roomCode)
-    io.to(roomCode).emit("playerListUpdate", room.players);
+    console.log("playerid sent");
+    console.log("new player joined room", roomCode);
+    io.to(roomCode).emit(
+      "playerListUpdate",
+      room.players.map((p) => ({
+        playerId: p.playerId,
+        socketId: p.socketId,
+        name: p.name,
+        score: p.score,
+        isCzar: p.isCzar,
+      }))
+    );
   });
 
   // start game
@@ -101,8 +118,8 @@ io.on("connection", (socket) => {
     player.hand.push(room.whiteDeck.pop());
     io.to(player.socketId).emit("updateHand", player.hand);
 
-    //brodcasting submission process 
-    io.to(roomCode).emit("submissionsUpdate", room.submissions)
+    //brodcasting submission process
+    io.to(roomCode).emit("submissionsUpdate", room.submissions);
 
     // check if all submitted
     if (room.submissions.length === room.players.length - 1) {
@@ -116,15 +133,13 @@ io.on("connection", (socket) => {
     const room = rooms[roomCode];
     const winner = room.players.find((p) => p.socketId === winnerId);
     winner.score++;
-    console.log(winningCard)
+    console.log(winningCard);
     io.to(roomCode).emit("roundResult", {
       winner: winner.name,
       scores: room.players.map((p) => ({ name: p.name, score: p.score })),
-      winningCard: winningCard
-
+      winningCard: winningCard,
     });
 
-   
     room.submissions = [];
     room.nextRound();
 
@@ -135,13 +150,13 @@ io.on("connection", (socket) => {
         socketId: p.socketId,
         name: p.name,
         isCzar: p.isCzar,
-        score: p.score
+        score: p.score,
       })),
     });
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected", socket.id)
+    console.log("User disconnected", socket.id);
     //finding room to which this socket belonged to
     for (const roomCode in rooms) {
       const room = rooms[roomCode];
@@ -149,21 +164,29 @@ io.on("connection", (socket) => {
       if (!player) continue;
 
       player.disconnectTimeout = setTimeout(() => {
-        room.players = room.players.filter(p => p.playerId !== player.playerId);
-        io.to(roomCode).emit("playerListUpdate", room.players);
+        room.players = room.players.filter(
+          (p) => p.playerId !== player.playerId
+        );
+        io.to(roomCode).emit(
+          "playerListUpdate",
+          room.players.map((p) => ({
+            playerId: p.playerId,
+            socketId: p.socketId,
+            name: p.name,
+            score: p.score,
+            isCzar: p.isCzar,
+          }))
+        );
 
         if (room.players.length === 0) {
           delete rooms[roomCode];
         }
 
         console.log("Removed player after timeout::", player.name);
-
       }, 6000);
       break;
     }
-  })
-
-
+  });
 });
 
 httpServer.listen(PORT, () => {
