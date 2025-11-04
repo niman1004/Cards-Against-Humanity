@@ -96,7 +96,10 @@ function Playground() {
   }, []);
 
   function log(msg, data) {
-    setLogs((prev) => [...prev, `${msg}: ${JSON.stringify(data)}`]);
+    setLogs((prev) => {
+      const updated=[...prev, `${msg}: ${JSON.stringify(data)}`]
+      return updated.slice(-100);//keeping the prev 100 lines only
+    });
   }
 
   function handleJoin() {
