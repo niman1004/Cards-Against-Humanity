@@ -119,6 +119,8 @@ function Playground() {
   return (
     <div className="relative flex items-start justify-center w-screen h-screen text-2xl text-white font-bold ">
       {!roomJoined ? (
+        //add some funky ass bg here
+        //put this in a div so it can be in the centre
         <EnterRoomBox
           roomCode={roomCode}
           setRoomCode={setRoomCode}
