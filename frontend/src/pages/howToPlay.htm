@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>How to play</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body{
+            background-color: black;
+        }
+
+        main{
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        .container{
+            height: 70%;
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+            padding: 3rem 3rem;
+            border: 2px solid white;
+            border-radius: 2rem;
+            gap: 1rem;
+        }
+
+        .header{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.5rem;
+        }
+
+        .glass-card {
+            /* width: 300px;
+            padding: 40px; */
+            color: white;
+            /* border-radius: 16px; */
+            
+            /* Semi-transparent background */
+            background: rgba(255, 255, 255, 0.2); 
+            
+            /* The blurring effect (Crucial step) */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
+            
+            /* Subtle border to simulate glass edge reflections */
+            border: 3px solid rgba(255, 255, 255, 0.616);
+            
+            /* Shadow to add depth and separation */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            }
+        
+        .body-rules{
+            font-size: 1.5rem;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+
+        .scrollbar2 {
+            overflow: auto;
+        }
+
+        .scrollbar2::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .scrollbar2::-webkit-scrollbar-track {
+            border-radius: 8px;
+            background-color: #e7e7e7;
+            border: 1px solid #cacaca;
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+        }
+        
+        .scrollbar2::-webkit-scrollbar-thumb {
+            border-radius: 8px;
+            background-color: #363636;
+        }
+
+    </style>
+  </head>
+  <body>
+    <main>
+        <div class="container glass-card">
+            <div class="header">
+                <div class="Title">how to play</div>
+                <div class="cross"></div>
+            </div>
+            <div class="body-rules scrollbar2">  
+                <ol>
+                    <li>draw a black card: the card czar draws a black card and reads it aloud. this card usually contains a fill-in-the-blank statement or a question.</li>
+                    <li>select answer cards: all other players choose one (or more, depending on the black card) white answer card from their hand that they think best responds to the prompt.</li>
+                    <li>submit answers: once everyone has chosen their answer, players pass their selected white cards face down to the card czar.</li>
+                    <li>czar reads answers: the card czar shuffles the submitted white cards and reads them aloud in response to the black card.</li>
+                    <li>czar picks the best answer: after reading all the responses, the card czar chooses the funniest or best answer. the player who submitted that card wins the round.</li>
+                    <li>score points: the winning player receives 1 point (or 1 “awesome card” as a token, if you prefer).</li>
+                    <li>next round: the role of the card czar rotates clockwise, and everyone draws back up to 10 white cards.</li>
+                    <li>end of game: continue playing until a set number of points is reached (e.g., 5 or 10) or until players decide to stop. the player with the most points wins!</li>
+                </ol>
+
+                tips:
+                <ul>
+                    <li>rules: feel free to create house rules to suit your group’s style. this could include adding in bonus points for particularly clever answers or allowing multiple white cards for longer prompts.</li>
+                    <li>keep it fun: remember, the spirit of the game is to be humorous and enjoy the absurdity!</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+
+    <script src="index.js"></script>
+  </body>
+</html>

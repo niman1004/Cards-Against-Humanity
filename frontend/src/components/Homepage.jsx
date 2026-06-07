@@ -21,13 +21,14 @@ function Homepage() {
       "Your presence here says a lot about you.",
       '"Erm Actually! It\'s called Dark Humor 🤓"',
       "Here again? Do you like being insulted?",
+      "Didn't know we allowed [REDACTED] here."
     ];
 
     
 
   return (
-    <div className="flex items-center justify-center h-screen w-[90%]">
-    <div className="flex flex-row w-full gap-11 justify-around">
+    <div className="flex items-center justify-center h-screen w-[100%]">
+    <div className="flex flex-row w-full gap-[15rem] justify-around">
       <div className="flex flex-col  m-0 p-0 items-start mr-[100px] mt-[100px] mb-[100px]">
         <h1 className="font-bold text-[10rem] p-0 leading-none">
           cards </h1>
@@ -47,8 +48,9 @@ function Homepage() {
         >
           <div className="card-menu">
             <ul>
-              <li>Room Settings</li>
-              <li>About</li>
+              <li>room settings</li>
+              <li>about</li>
+              <li>how to play</li>
             </ul>
           </div>
           <div className="card-tag">cards against humanity</div>
@@ -60,10 +62,11 @@ function Homepage() {
         >
           <div className="card-menu">
             <ul>
+              <li>play</li>
               <li>
-                <Link to="/playground"  className="link-style">Play</Link>
+                <Link to="/playground"  className="link-style">join room</Link>
               </li>
-              <li>Join Room</li>
+              <li>create room</li>
             </ul>
           </div>
           <div className="card-tag">cards against humanity</div>
