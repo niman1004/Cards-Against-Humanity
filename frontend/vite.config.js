@@ -4,5 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base:process.env.VITE_BASE_PATH || "/Cards-Against-Humanity"
+  base:process.env.VITE_BASE_PATH 
 })
+//|| "/Cards-Against-Humanity" 
+//add this to base if errors happen :)
