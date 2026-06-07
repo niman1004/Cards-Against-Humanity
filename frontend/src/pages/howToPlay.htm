@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
     <style>
         body{
-            background-color: black;
+            background-color: #363636;
         }
 
         main{
@@ -36,6 +36,7 @@
             align-items: center;
             justify-content: center;
             font-size: 3.5rem;
+            position: relative;
         }
 
         .glass-card {
@@ -63,7 +64,7 @@
             overflow-y: auto;
             scrollbar-width: thin;
         }
-
+/* 
         .scrollbar2 {
             overflow: auto;
         }
@@ -82,6 +83,40 @@
         .scrollbar2::-webkit-scrollbar-thumb {
             border-radius: 8px;
             background-color: #363636;
+        } */
+        
+        .cross{
+            position: absolute;
+            right: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cross button {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: white;
+            font-size: 2rem;
+            }
+           
+        .cross button:hover{
+            color: purple;
+        }
+
+        /* Target the element or container you want to hide the scrollbar for */
+        .hide-scrollbar {
+        /* Hides scrollbar for Firefox */
+        scrollbar-width: none; 
+        
+        /* Hides scrollbar for Internet Explorer and Edge */
+        -ms-overflow-style: none; 
+        }
+
+        /* Hides scrollbar for Chrome, Safari, and Opera */
+        .hide-scrollbar::-webkit-scrollbar {
+        display: none;
         }
 
     </style>
@@ -91,9 +126,9 @@
         <div class="container glass-card">
             <div class="header">
                 <div class="Title">how to play</div>
-                <div class="cross"></div>
+                <div class="cross"><button type="button" aria-label="Close">&#x2715;</button></div>
             </div>
-            <div class="body-rules scrollbar2">  
+            <div class="body-rules hide-scrollbar">  
                 <ol>
                     <li>draw a black card: the card czar draws a black card and reads it aloud. this card usually contains a fill-in-the-blank statement or a question.</li>
                     <li>select answer cards: all other players choose one (or more, depending on the black card) white answer card from their hand that they think best responds to the prompt.</li>
@@ -109,6 +144,7 @@
                 <ul>
                     <li>rules: feel free to create house rules to suit your group’s style. this could include adding in bonus points for particularly clever answers or allowing multiple white cards for longer prompts.</li>
                     <li>keep it fun: remember, the spirit of the game is to be humorous and enjoy the absurdity!</li>
+                    <li>ps: please don't cancel people for this. it's a game ffs</li>
                 </ul>
             </div>
         </div>
