@@ -25,7 +25,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: clamp(6px, 1vh, 24px) clamp(12px, 2vw, 40px);
+      padding: 12px 24px;
       background: #111;
       border-bottom: 1px solid #333;
     }
@@ -34,31 +34,28 @@
       background: #7c3aed;
       color: #fff;
       border: none;
-      border-radius: 5px;
-      padding: clamp(4px, 0.6vh, 7px) clamp(8px, 1vw, 13px);
-      font-size: clamp(10px, 0.9vw, 15px);
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
     }
 
-    .room-title { font-size: clamp(12px, 1.4vw, 22px); font-weight: 700; letter-spacing: 1px; }
+    .room-title { font-size: clamp(14px, 2vw, 22px); font-weight: 700; letter-spacing: 1px; }
 
-    .player-info { display: flex; align-items: center; gap: 6px; font-size: clamp(10px, 0.9vw, 16px); }
+    .player-info { display: flex; align-items: center; gap: 8px; font-size: 15px; }
     .avatar {
-      width: clamp(18px, 1.6vw, 24px);
-      height: clamp(18px, 1.6vw, 24px);
-      border-radius: 50%;
+      width: 28px; height: 28px; border-radius: 50%;
       background: #555; display: flex; align-items: center;
-      justify-content: center;
-      font-size: clamp(10px, 0.9vw, 13px);
+      justify-content: center; font-size: 15px;
     }
 
     /* ── Main area ── */
     .main {
       display: flex;
       flex: 1;
-      padding: clamp(10px, 1.5vh, 20px) clamp(16px, 8%, 120px);
-      gap: clamp(12px, 2vw, 32px);
+      padding: 16px clamp(16px, 8%, 120px);
+      gap: 24px;
       overflow: hidden;
       justify-content: space-around;
     }
@@ -67,41 +64,38 @@
     .left-col {
       display: flex;
       flex-direction: column;
-      align-items: center;
       gap: 12px;
-      width: clamp(180px, 18vw, 260px);
+      width: clamp(220px, 24vw, 340px);
       flex-shrink: 0;
-      font-size: 2rem;
     }
 
     .round-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: clamp(14px, 1.4vw, 18px);
-      width: 100%;
+      font-size: 15px;
     }
 
-    .timer { display: flex; align-items: center; gap: 6px; font-size: clamp(14px, 1.4vw, 18px); }
+    .timer { display: flex; align-items: center; gap: 6px; font-size: 14px; }
 
     .black-card {
       background: #000;
       border: 1px solid #ffffff;
-      border-radius: clamp(6px, 0.8vw, 12px);
+      border-radius: 10px;
       width: 100%;
-      max-width: 100%;
+      max-width: 320px;
       height: auto;
-      padding: clamp(12px, 1.5vw, 20px);
+      padding: 20px 16px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       aspect-ratio: 8/11;
     }
 
-    .black-card p { font-size: clamp(11px, 1.1vw, 16px); font-weight: 600; line-height: 1.5; padding-top: clamp(1rem, 3vh, 3rem); }
-    .card-tag { font-size: clamp(9px, 0.8vw, 11px); color: #aaa; }
+    .black-card p { font-size: 1.2rem; font-weight: 600; line-height: 1.5; padding-top: 3rem; }
+    .card-tag { font-size: 11px; color: #aaa; }
 
-    .czar-label { text-align: center; font-size: clamp(14px, 1.4vw, 18px); color: #ccc; }
+    .czar-label { text-align: center; font-size: 14px; color: #ccc; }
 
     /* Right column */
     .right-col {
@@ -123,18 +117,19 @@
       color: #fff;
       border-radius: 6px;
       padding: 8px 20px;
-      font-size: clamp(13px, 1.2vw, 15px);
+      font-size: 15px;
       font-weight: 600;
       cursor: pointer;
     }
 
-    .progress { display: flex; align-items: center; gap: 6px; font-size: clamp(13px, 1.2vw, 15px); }
-    .check { color: #7c3aed; font-size: clamp(16px, 1.5vw, 20px); }
+    .progress { display: flex; align-items: center; gap: 6px; font-size: 15px; }
+    .check { color: #7c3aed; font-size: 20px; }
 
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: clamp(6px, 1vw, 16px);
+      row-gap: 1.2rem;
+      column-gap: 0.6rem;
       overflow-y: auto;
       scrollbar-width: none;
     }
@@ -143,9 +138,9 @@
       background: #fff;
       color: #000;
       border: 2px solid #ccc;
-      border-radius: clamp(6px, 0.8vw, 10px);
-      padding: clamp(10px, 1.2vw, 16px);
-      padding-top: clamp(3rem, 6vh, 6rem);
+      border-radius: 0.6rem;
+      padding: 12px;
+      padding-top: 3rem;
       height: auto;
       width: 100%;
       aspect-ratio: 70/97;
@@ -154,29 +149,29 @@
       justify-content: space-between;
       text-align: left;
       cursor: pointer;
-      font-size: clamp(11px, 1.1vw, 16px);
+      font-size: 1.1rem;
       font-weight: 600;
       transition: transform 0.1s, border-color 0.1s;
     }
 
     .white-card:hover { transform: scale(1.02); }
     .white-card.selected { border: 3px solid #7c3aed; }
-    .white-card .card-tag { font-size: clamp(8px, 0.7vw, 10px); color: #888; font-weight: 400; }
+    .white-card .card-tag { font-size: 10px; color: #888; font-weight: 400; }
 
     /* ── Bottom ── */
     .bottom {
       display: grid;
-      grid-template-columns: minmax(140px, 20vw) 1fr minmax(100px, 15vw);
+      grid-template-columns: minmax(160px, 240px) 1fr minmax(120px, 200px);
       border-top: 1px solid #333;
       background: #111;
-      min-height: clamp(140px, 20vh, 240px);
-      max-height: clamp(160px, 25vh, 280px);
+      min-height: 180px;
+      max-height: 240px;
       overflow: hidden;
     }
 
     .players-panel { border-right: 1px solid #333; padding: 12px; }
 
-    .players-panel table { width: 100%; border-collapse: collapse; font-size: clamp(11px, 1.1vw, 14px); }
+    .players-panel table { width: 100%; border-collapse: collapse; font-size: 14px; }
     .players-panel th {
       text-align: left; padding-bottom: 6px; color: #ccc;
       border-bottom: 1px solid #444;
@@ -187,8 +182,8 @@
     .players-panel tfoot td { border-top: 1px solid #444; padding-top: 6px; color: #ccc; }
 
     .log-panel { padding: 16px 24px; border-right: 1px solid #333; }
-    .log-panel h3 { font-size: clamp(14px, 1.4vw, 18px); font-weight: 700; margin-bottom: 8px; }
-    .log-panel p { font-size: clamp(12px, 1.1vw, 14px); color: #ccc; margin-bottom: 4px; }
+    .log-panel h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .log-panel p { font-size: 14px; color: #ccc; margin-bottom: 4px; }
     .log-panel p.dim { color: #888; }
 
     .leaderboard-panel {
@@ -196,29 +191,18 @@
       display: flex;
       align-items: flex-start;
       justify-content: center;
-      font-size: clamp(13px, 1.2vw, 16px);
+      font-size: 16px;
       font-weight: 600;
       color: #ccc;
     }
+
+    .wait-text{
+        font-size: 1.5rem !important;
+        font-weight: bold;
+      }
+
     @media (max-width: 768px) {
       body { overflow: auto; height: auto; }
-
-      .topnav {
-        flex-wrap: wrap;
-        gap: 8px;
-        padding: 10px 14px;
-      }
-
-      .room-title {
-        font-size: clamp(12px, 3.5vw, 16px);
-        letter-spacing: 0;
-        order: 3;
-        width: 100%;
-        text-align: center;
-      }
-
-      .btn-leave { order: 1; }
-      .player-info { order: 2; }
 
       .main {
         flex-direction: column;
@@ -240,6 +224,8 @@
 
       .players-panel { border-right: none; border-bottom: 1px solid #333; }
       .log-panel { border-right: none; border-bottom: 1px solid #333; }
+
+      .room-title { font-size: 14px; }
     }
   </style>
 </head>
@@ -280,7 +266,8 @@
         <div class="progress"><span>0/1</span><span class="check">✔</span></div>
       </div>
 
-      <div class="cards-grid" id="cardsGrid"></div>
+      <!-- <div class="cards-grid" id="cardsGrid"></div> -->
+       <div class="wait-text">Waiting for players to submit *cue elevator music*</div>
     </div>
 
   </div>

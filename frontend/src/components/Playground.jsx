@@ -8,40 +8,46 @@ import {
   emitPickWinner,
 } from "../controlers/socket.js";
 import EnterRoomBox from "./EnterRoomBox.jsx";
-import BlackCard from "./card_components/BlackCard.jsx";
-import WhiteCardBtn from "./card_components/WhiteCardBtn.jsx";
 import ConfettiExplosion from "react-confetti-explosion";
-import Container from "./container/Container.jsx";
+import "./css_aryan/playground.css";
 
 function Playground() {
-  const [roomCode, setRoomCode] = useState("");
-  const [username, setUsername] = useState("");
-  const [players, setPlayers] = useState([]);
-  const [hand, setHand] = useState([]);
-  const [blackCard, setBlackCard] = useState(null);
-  const [submissions, setSubmissions] = useState([]);
-  const [isCzar, setIsCzar] = useState(false);
-  const [logs, setLogs] = useState([]);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [roomJoined, setRoomJoined] = useState(false);
-  const [chosenCard, setChosenCard] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
-  const [confetti, setConfetti] = useState(false);
-  const [roundWinner, setRoundWinner] = useState(null);
-  const [showWinnerDialog, setShowWinnerDialog] = useState(false);
+  // ── State ──────────────────────────────────────────────────────────────────
+
+  const [roomCode, setRoomCode] = useState("");       // room code the player typed in
+  const [username, setUsername] = useState("");        // player's display name
+  const [players, setPlayers] = useState([]);          // live player list from server (name, id, score, isCzar)
+  const [hand, setHand] = useState([]);                // this player's white cards
+  const [blackCard, setBlackCard] = useState(null);   // current round's black card text
+  const [submissions, setSubmissions] = useState([]); // white cards submitted by all players this round
+  const [isCzar, setIsCzar] = useState(false);        // true if this player is the Card Czar this round
+  const [logs, setLogs] = useState([]);                // activity log entries (shown in the bottom bar)
+  const [gameStarted, setGameStarted] = useState(false);     // flips to true once the host starts the game
+  const [roomJoined, setRoomJoined] = useState(false);       // flips to true after joining a room (hides the join screen)
+  const [chosenCard, setChosenCard] = useState(null);         // the white card this player has selected but not yet submitted
+  const [submitted, setSubmitted] = useState(false);          // true after this player submits their card for the round
+  const [confetti, setConfetti] = useState(false);            // triggers the confetti animation on round win
+  const [roundWinner, setRoundWinner] = useState(null);       // name of the player who won the last round
+  const [showWinnerDialog, setShowWinnerDialog] = useState(false); // controls visibility of the winner overlay
+
+  // ── Socket listeners ───────────────────────────────────────────────────────
+  // Registers all server event handlers once on mount.
+  // Each handler updates local state so React re-renders the UI automatically.
   useEffect(() => {
     registerListeners({
+      // Server sent an updated player list (someone joined or left)
       onPlayerListUpdate: (players) => {
         setPlayers(players);
-        log(
-          "players updated",
-          players.map((p) => p.name)
-        );
+        log("players updated", players.map((p) => p.name));
       },
+
+      // Server confirmed the game has started for everyone in the room
       onGameStarted: () => {
         setGameStarted(true);
         log("game started for everyone!");
       },
+
+      // Server started a new round — reset per-round state and update czar
       onNewRound: (data) => {
         setSubmitted(false);
         setChosenCard(null);
@@ -51,60 +57,79 @@ function Playground() {
         setIsCzar(me?.isCzar || false);
         log("new round started", data);
       },
+
+      // Server dealt new white cards to this player
       onUpdateHand: (hand) => {
         setHand(hand);
         log("your hand updated", hand);
       },
+
+      // Server told this player they are the Czar and sent all submissions to judge
       onJudgeRound: (subs) => {
         setSubmissions(subs);
         log("you are czar", subs);
       },
+
+      // Server announced the round winner — show dialog + confetti for 3.5s
       onRoundResult: (result) => {
         log("round result", result);
         const winner = result.winner;
         setRoundWinner(winner);
         setShowWinnerDialog(true);
-        
-          setConfetti(true);
-          setTimeout(() => setConfetti(false), 3500);
-       
+        setConfetti(true);
+        setTimeout(() => setConfetti(false), 3500);
         setSubmissions([]);
         setTimeout(() => {
           setShowWinnerDialog(false);
           setRoundWinner(null);
         }, 3500);
       },
+
+      // Server pushed a mid-round submissions update (another player submitted)
       onSubmissionsUpdate: (subs) => {
         setSubmissions(subs);
         log("submissions updated", subs);
       },
     });
 
+    // Remove all socket listeners when the component unmounts
     return () => {
       socket.off();
     };
   }, []);
 
+  // ── Helpers ────────────────────────────────────────────────────────────────
+
+  // Appends a message to the activity log shown in the bottom bar
   function log(msg, data) {
     setLogs((prev) => [...prev, `${msg}: ${JSON.stringify(data)}`]);
   }
 
+  // Sends join-room event to the server and switches to the game view
   function handleJoin() {
     emitJoinRoom(roomCode, username);
     setRoomJoined(true);
   }
 
+  // Tells the server to start the game (only the host should call this)
   function startGame() {
     emitStartGame(roomCode);
   }
 
+  // Sends this player's chosen white card to the server and locks in the submission
   function submitCard() {
     emitSubmitCard(roomCode, chosenCard);
     setSubmitted(true);
   }
 
+  // ── Derived values ─────────────────────────────────────────────────────────
+  const czar = players.find((p) => p.isCzar);    // current Czar player object
+  const recentLogs = logs.slice(-5);              // only show the last 5 log lines
+
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="relative flex items-start justify-center w-screen h-screen text-2xl text-white font-bold ">
+    <div className="pg-root">
+      {/* Show the join screen until the player has entered a room */}
       {!roomJoined ? (
         <EnterRoomBox
           roomCode={roomCode}
@@ -114,120 +139,185 @@ function Playground() {
           onJoin={handleJoin}
         />
       ) : (
-        <div className="w-full  bg-[#101010] rounded-lg shadow-lg p-6 flex flex-col gap-6">
-          {/* Top Bar */}
-          <div className="flex flex-row justify-between items-center">
-            <div className="flex flex-row gap-10">
-              <p className="font-bold text-2xl">Username: {username}</p>
-              <p className=" text-2xl text-gray-400">Room: {roomCode}</p>
+        <div className="pg-shell">
+
+          {/* Top Nav — Leave button | Room code (always centered) | Player avatar */}
+          <nav className="pg-topnav">
+            <button className="pg-btn-leave">&lt; Leave Room</button>
+            <span className="pg-room-title">ROOM: {roomCode}</span>
+            <div className="pg-player-info">
+              <div className="pg-avatar">👤</div>
+              <span>{username}</span>
             </div>
-            {!gameStarted && (
-              <button
-                className="px-4 py-2 bg-[#804385] rounded-md hover:bg-[#69396e]"
-                onClick={startGame}
-              >
-                Start Game
-              </button>
-            )}
-          </div>
+          </nav>
 
-          {/* Players */}
-          <div className="bg-[#1a1a1a] p-4 rounded-lg">
-            <h2 className="text-2xl font-semibold mb-2 mt-1">
-              Players ({players.length})
-            </h2>
-            <ul className=" ml-3 text-2xl flex flex-row gap-5">
-              {players.map((p) => (
-                <li
-                  key={p.id}
-                  className={`${p.isCzar ? "text-[#c084fc]" : "text-white"}`}
-                >
-                  {p.name} {p.isCzar ? "(Czar)" : ""} — score: {p.score}
-                </li>
-              ))}
-            </ul>
-          </div>
+          {/* Main game area — left col (black card) + right col (white cards) */}
+          <div className="pg-main">
 
-          {/* Game Area */}
-          {/* black card */}
-          {gameStarted && (
-            <div className="bg-[#1a1a1a] p-4 rounded-lg flex flex-row gap-4">
-              <div className="p-8 flex flex-col">
-                <BlackCard blackCard={blackCard} />
+            {/* Left column: round info, the black card, czar label, start button */}
+            <div className="pg-left-col">
+              <div className="pg-round-row">
+                <span>Round [ ]</span>
+                <div className="pg-timer"><span>[sec]</span><span>⏱</span></div>
+              </div>
+
+              {/* Black card — shows the prompt for this round */}
+              <div className="pg-black-card">
+                <p>{blackCard || "Waiting for game to start…"}</p>
+                <span className="pg-card-tag">cards against humanity</span>
+              </div>
+
+              {/* Shows which player is the Czar this round */}
+              <div className="pg-czar-label">
+                {czar ? `Czar: ${czar.name}` : "[Czar Name]"}
+              </div>
+
+              {/* Start Game button — only visible before game begins */}
+              {!gameStarted && (
+                <button className="pg-btn-start" onClick={startGame}>
+                  Start Game
+                </button>
+              )}
+            </div>
+
+            {/* Right column: submit row + card grid (hand, submissions, or waiting message) */}
+            <div className="pg-right-col">
+
+              {/* Submit row — button is disabled until a card is selected, or if already submitted/czar */}
+              <div className="pg-submit-row">
                 <button
-                  className="bg-[#804385] px-4 py-2 rounded-md hover:bg-[#69396e] mt-3"
-                  disabled={!chosenCard}
+                  className="pg-btn-submit"
+                  disabled={!chosenCard || submitted || isCzar}
                   onClick={() => submitCard()}
                 >
                   Submit
                 </button>
+                {/* Shows how many cards selected out of required (always 1 in standard rules) */}
+                <div className="pg-progress">
+                  <span>{chosenCard ? "1" : "0"}/1</span>
+                  <span className="pg-check">✔</span>
+                </div>
               </div>
 
-              {!isCzar && !submitted && (
-                <div>
-                  <h2 className="font-bold mb-2">Your Hand</h2>
-                  <div className="flex flex-wrap gap-2">
-                    {hand.map((c, i) => (
-                      <WhiteCardBtn
-                        key={i}
-                        disabled={chosenCard === c}
-                        text={c}
-                        viewOnly={false}
-                        onClick={() => setChosenCard(c)}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
+              <div className="pg-cards-grid">
+                {/* Player's hand — visible when not czar and hasn't submitted yet */}
+                {!isCzar && !submitted &&
+                  hand.map((c, i) => (
+                    <button
+                      key={i}
+                      className={`pg-white-card${chosenCard === c ? " selected" : ""}`}
+                      onClick={() => setChosenCard(c)}
+                    >
+                      <span>{c}</span>
+                      <span className="pg-card-tag">cards against humanity</span>
+                    </button>
+                  ))
+                }
 
-              {((submitted && submissions.length > 0) || isCzar) && (
-                <div>
-                  <h2 className="font-bold mb-2">
-                    {submissions.length == 0
-                      ? "Waiting for players to submit  *cue elevator music*"
-                      : "Submissions"}
-                  </h2>
-                  <div className="flex flex-wrap gap-2">
-                    {submissions.map((s, i) => (
-                      <WhiteCardBtn
-                        key={i}
-                        disabled={!isCzar}
-                        onClick={() => emitPickWinner(roomCode, s.playerId)}
-                        text={s.card}
-                        viewOnly={!isCzar}
-                      />
-                    ))}
+                {/* Submissions — shown to the Czar (to pick winner) or to a player after they submit */}
+                {((submitted && submissions.length > 0) || isCzar) &&
+                  submissions.map((s, i) => (
+                    <button
+                      key={i}
+                      className="pg-white-card"
+                      disabled={!isCzar}
+                      onClick={() => isCzar && emitPickWinner(roomCode, s.playerId)}
+                    >
+                      <span>{s.card}</span>
+                      <span className="pg-card-tag">cards against humanity</span>
+                    </button>
+                  ))
+                }
+
+                {/* Waiting message for regular players after submitting, before czar picks */}
+                {submitted && submissions.length === 0 && !isCzar && (
+                  <div className="pg-waiting">
+                    Waiting for players to submit… *cue elevator music*
                   </div>
-                </div>
-              )}
+                )}
+
+                {/* Waiting message for the Czar before any submissions arrive */}
+                {isCzar && submissions.length === 0 && (
+                  <div className="pg-czar-wait">
+                    <span className="pg-czar-wait-title">You are the Czar</span>
+                    <span className="pg-czar-wait-sub">Waiting for players to submit *cue elevator music*</span>
+                  </div>
+                )}
+              </div>
             </div>
-          )}
+          </div>
 
-          {/* Winner Dialog */}
+          {/* Bottom bar — Players table | Activity log | Leaderboard */}
+          <div className="pg-bottom">
+
+            {/* Players panel — lists all players in the room with their scores */}
+            <div className="pg-players-panel">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Players</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {players.map((p) => (
+                    <tr key={p.id}>
+                      {/* Czar is highlighted in purple with a star */}
+                      <td className={p.isCzar ? "pg-czar-player" : ""}>
+                        {p.name}{p.isCzar ? " ★" : ""}
+                      </td>
+                      <td>{p.score ?? 0}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr><td>{players.length} players</td></tr>
+                </tfoot>
+              </table>
+            </div>
+
+            {/* Activity log — last 5 events, oldest entry dimmed */}
+            <div className="pg-log-panel">
+              <h3>Activity</h3>
+              {recentLogs.map((line, i) => (
+                <p key={i} className={i < recentLogs.length - 1 ? "dim" : ""}>
+                  {line}
+                </p>
+              ))}
+            </div>
+
+            {/* Leaderboard — top 3 players sorted by score */}
+            <div className="pg-leaderboard-panel">
+              <h3>Leaderboard</h3>
+              {[...players]
+                .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
+                .slice(0, 3)
+                .map((p, i) => (
+                  <div key={p.id} className="pg-leaderboard-row">
+                    <span>{["🥇", "🥈", "🥉"][i]} {p.name}</span>
+                    <span>{p.score ?? 0}</span>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          {/* Winner overlay — shown for 3.5s after the Czar picks a winner */}
           {showWinnerDialog && (
-            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
-              <div className="bg-[#222] p-6 rounded-lg shadow-lg text-center w-[350px]">
-                <h2 className="text-3xl mb-3 text-[#804385] font-bold">
-                  🎉 {roundWinner} has Humor! 🎉
-                </h2>
-                <p className="text-gray-300 text-xl">Onto the next round...</p>
+            <div className="pg-winner-overlay">
+              <div className="pg-winner-box">
+                <h2>🎉 {roundWinner} has Humor! 🎉</h2>
+                <p>Onto the next round…</p>
               </div>
             </div>
           )}
 
-          {/* Confetti */}
+          {/* Confetti explosion — fires alongside the winner overlay */}
           {confetti && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+            <div className="pg-confetti">
               <ConfettiExplosion duration={3000} />
             </div>
           )}
 
-          {/* Logs */}
-          <div className="bg-[#1a1a1a] p-3 rounded-lg h-40 overflow-y-auto text-2xl text-[#804385] text-center font-mono">
-            {logs.map((line, i) => (
-              <div key={i}>{line}</div>
-            ))}
-          </div>
         </div>
       )}
     </div>
