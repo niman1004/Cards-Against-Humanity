@@ -13,6 +13,9 @@ function WhiteCardBtn({ text, disabled, onClick , viewOnly}) {
       <div className="p-3 pb-[150px]">
         {text || "None"}
       </div>
+      <div>
+      <div className="card-tag-w">cards against humanity</div>
+      </div>
     </button>
   );
 }
