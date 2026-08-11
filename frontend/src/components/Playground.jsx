@@ -13,6 +13,7 @@ import WhiteCardBtn from "./card_components/WhiteCardBtn.jsx";
 import ConfettiExplosion from "react-confetti-explosion";
 import Container from "./container/Container.jsx";
 
+
 function Playground() {
   const [roomCode, setRoomCode] = useState("");
   const [username, setUsername] = useState("");
@@ -117,17 +118,20 @@ function Playground() {
   }
 
   return (
-    <div className="relative flex items-start justify-center w-screen h-screen text-2xl text-white font-bold ">
+    <div className="relative flex items-start justify-center w-screen h-screen text-2xl text-white font-bold overflow-hidden ">
       {!roomJoined ? (
         //add some funky ass bg here
         //put this in a div so it can be in the centre
-        <EnterRoomBox
+       
+          <EnterRoomBox
           roomCode={roomCode}
           setRoomCode={setRoomCode}
           username={username}
           setUsername={setUsername}
           onJoin={handleJoin}
         />
+      
+        
       ) : (
         <div className="w-full  bg-[#101010] rounded-lg shadow-lg p-6 flex flex-col gap-6">
           {/* Top Bar */}

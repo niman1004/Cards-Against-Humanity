@@ -1,11 +1,57 @@
 // EnterRoomBox.js
-import React from 'react'
+import{React , useEffect , useRef} from 'react'
 
 function EnterRoomBox({ roomCode, setRoomCode, username, setUsername, onJoin }) {
   const isDisabled = !username.trim() || !roomCode.trim()
 
+  //ADDING THE DVD ANIMATION
+  const boxRef= useRef(null)
+  const position= useRef({
+    x:100, 
+    y:100
+  })
+
+  const velocity= useRef({
+    x:0.5,
+    y:0.5 //change here
+  })
+
+  useEffect(()=>{
+    let animationFrame;
+
+    const animate=()=>{
+      const box= boxRef.current
+      if(!box) return
+      const boxWidth= box.offsetWidth
+      const boxHeight= box.offsetHeight
+
+      const maxX= window.innerWidth - boxWidth
+      const maxY= window.innerHeight - boxHeight
+      
+      position.current.x += velocity.current.x
+      position.current.y+= velocity.current.y
+
+      if(position.current.x <=0 || position.current.x >= maxX){
+        velocity.current.x *= -1
+      }
+
+      if(position.current.y <=0 || position.current.y >= maxY){
+        velocity.current.y *= -1
+      }
+
+      box.style.transform=`
+        translate3d(${position.current.x}px , ${position.current.y}px , 0)
+      `
+      animationFrame= requestAnimationFrame(animate)
+    }
+
+    animationFrame= requestAnimationFrame(animate)
+    return ()=> cancelAnimationFrame(animationFrame)
+  } , []);
+
   return (
-    <div className="border border-[#69396e] rounded-xl text-4xl p-8 flex flex-col items-center bg-[#101010] shadow-xl w-[1000px]">
+    <div ref={boxRef} className='fixed left-0 top-0  overflow-hidden'>
+    <div className="border border-[#69396e] rounded-xl text-4xl p-8 flex flex-col items-center bg-[#101010] shadow-xl ">
       <h1 className="font-semibold text-white mb-6 text-4xl text-center">
         Enter Room Code to join a game
       </h1>
@@ -37,6 +83,7 @@ function EnterRoomBox({ roomCode, setRoomCode, username, setUsername, onJoin }) 
           Join
         </button>
       </div>
+    </div>
     </div>
   )
 }
